@@ -11,19 +11,36 @@ Xcode 11 beta-bundled Swift 5.1
 ```swift
 import SyntaxBuilder
 
-let sourceFile = SourceFile {
-    Import("Foundation")
+struct UserSourceFile: SourceFile {
+    let idType: String
 
-    Struct("User") {
-        Let("name", of: String.self)
-        Var("age", of: Int.self)
+    @SyntaxListBuilder
+    var body: Body {
+        Import("Foundation")
+
+        Struct("User") {
+            Typealias("ID", of: idType)
+
+            Let("id", of: "ID")
+                .prependingComment("The user's ID.", .docLine)
+
+            Let("name", of: String.self)
+                .prependingComment("The user's name.", .docLine)
+
+            Var("age", of: Int.self)
+                .prependingComment("The user's age.", .docLine)
+        }
+        .prependingComment("""
+            User is an user.
+            <https://github.com/akkyie/SyntaxBuilder/>
+        """, .docBlock)
     }
 }
 
-let writer = SourceWriter(source: sourceFile, format: Format(indentWidth: 4))
+let user = UserSourceFile(idType: "String")
 
 var str: String = ""
-writer.write(to: &str)
+user.write(to: &str)
 
 print(str)
 ```
@@ -32,8 +49,21 @@ results in:
 
 ```swift
 import Foundation
+
+/**
+    User is an user.
+    <https://github.com/akkyie/SyntaxBuilder/>
+ */
 struct User {
+    typealias ID = String
+    
+    /// The user's ID.
+    let id: ID
+    
+    /// The user's name.
     let name: String
+    
+    /// The user's age.
     var age: Int
 }
 ```
