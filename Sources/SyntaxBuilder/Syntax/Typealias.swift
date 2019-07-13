@@ -4,7 +4,7 @@ public struct Typealias: DeclBuildable {
     let name: String
     let type: String
 
-    public init(_ name: String, type: String) {
+    public init(_ name: String, of type: String) {
         self.name = name
         self.type = type
     }

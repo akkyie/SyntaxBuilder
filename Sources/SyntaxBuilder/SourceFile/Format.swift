@@ -59,18 +59,3 @@ extension Format {
         return trivia
     }
 }
-
-open class SourceWriter {
-    let source: SourceFile
-    let format: Format
-
-    public init(source: SourceFile, format: Format = .default) {
-        self.source = source
-        self.format = format
-    }
-
-    open func write<Output: TextOutputStream>(to output: inout Output) {
-        let syntax = source.buildSyntax(format: format, leadingTrivia: nil)
-        syntax.write(to: &output)
-    }
-}
