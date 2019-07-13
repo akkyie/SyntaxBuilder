@@ -1,14 +1,24 @@
 import SwiftSyntax
 
+public protocol MemberDeclListBuildable: SyntaxBuildable {
+    func buildMemberDeclList(format: Format, leadingTrivia: Trivia?) -> MemberDeclListSyntax
+}
+
+extension MemberDeclListBuildable {
+    public func buildSyntax(format: Format, leadingTrivia: Trivia?) -> Syntax {
+        buildMemberDeclList(format: format, leadingTrivia: leadingTrivia)
+    }
+}
+
 public protocol DeclBuildable: MemberDeclListBuildable {
     func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax
 }
 
-public protocol MemberDeclListBuildable {
-    func buildMemberDeclList(format: Format, leadingTrivia: Trivia?) -> MemberDeclListSyntax
-}
-
 extension DeclBuildable {
+    public func buildSyntax(format: Format, leadingTrivia: Trivia?) -> Syntax {
+        buildDecl(format: format, leadingTrivia: leadingTrivia)
+    }
+
     public func buildMemberDeclList(format: Format, leadingTrivia: Trivia?) -> MemberDeclListSyntax {
         let decl = buildDecl(format: format, leadingTrivia: leadingTrivia)
         return SyntaxFactory.makeMemberDeclList([
