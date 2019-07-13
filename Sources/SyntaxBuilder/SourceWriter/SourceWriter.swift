@@ -20,7 +20,43 @@ extension Format {
     }
 
     func makeNewline() -> Trivia {
-        Trivia.newlines(1).appending(.spaces(indents * indentWidth))
+        appendNewline(to: .zero)
+    }
+
+    func appendNewline(to trivia: Trivia, count: Int = 1) -> Trivia {
+        trivia
+            .appending(.newlines(count))
+            .appending(.spaces(indents * indentWidth))
+    }
+
+    func appendComment(to trivia: Trivia, _ content: String, _ type: CommentType) -> Trivia {
+        let makeLines = { (content: String) in content.split(separator: "\n", omittingEmptySubsequences: false) }
+        var trivia = trivia
+        switch type {
+        case .raw:
+            trivia = trivia.appending(.garbageText(content))
+        case .line:
+            trivia = makeLines(content).reduce(trivia) { trivia, line in
+                appendNewline(to: trivia.appending(.lineComment("// " + line)))
+            }
+        case .docLine:
+            trivia = makeLines(content).reduce(trivia) { trivia, line in
+                appendNewline(to: trivia.appending(.lineComment("/// " + line)))
+            }
+        case .block:
+            trivia = appendNewline(to: trivia.appending(.docBlockComment("/*")))
+            trivia = makeLines(content).reduce(trivia) { trivia, line in
+                appendNewline(to: trivia.appending(.lineComment(String(line))))
+            }
+            trivia = appendNewline(to: trivia.appending(.docBlockComment(" */")))
+        case .docBlock:
+            trivia = appendNewline(to: trivia.appending(.docBlockComment("/**")))
+            trivia = makeLines(content).reduce(trivia) { trivia, line in
+                appendNewline(to: trivia.appending(.lineComment(String(line))))
+            }
+            trivia = appendNewline(to: trivia.appending(.docBlockComment(" */")))
+        }
+        return trivia
     }
 }
 
