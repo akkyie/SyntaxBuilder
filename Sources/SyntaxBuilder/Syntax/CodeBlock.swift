@@ -7,7 +7,7 @@ public struct CodeBlock: SyntaxListBuildable {
         func trivia(for index: Int) -> Trivia {
             index == builders.startIndex
                 ? leadingTrivia ?? .zero
-                : format.appendNewline(to: leadingTrivia ?? .zero)
+                : (leadingTrivia ?? .zero).appending(format.makeNewline())
         }
 
         return builders

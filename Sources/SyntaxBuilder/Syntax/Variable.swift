@@ -5,11 +5,11 @@ public protocol VariableMutability {
 }
 
 public enum VariableLetMutability: VariableMutability {
-    public static let token = SyntaxFactory.makeLetKeyword()
+    public static let token = Tokens.let
 }
 
 public enum VariableVarMutability: VariableMutability {
-    public static let token = SyntaxFactory.makeVarKeyword()
+    public static let token = Tokens.var
 }
 
 public typealias Let = Variable<VariableLetMutability>
@@ -30,27 +30,27 @@ public struct Variable<Mutability: VariableMutability>: DeclBuildable {
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
-        let mutabilityKeyword = Mutability.token
-            .withLeadingTrivia(leadingTrivia ?? .zero)
-            .withTrailingTrivia(.spaces(1))
+        let mutabilityKeyword = Mutability.token.with(leading: leadingTrivia)
 
         let nameIdentifier = SyntaxFactory.makeIdentifier(name)
         let typeIdentifier = SyntaxFactory.makeTypeIdentifier(type)
-        let colon = SyntaxFactory.makeColonToken().withTrailingTrivia(.spaces(1))
+
+        let binding = SyntaxFactory.makePatternBinding(
+            pattern: SyntaxFactory.makeIdentifierPattern(identifier: nameIdentifier),
+            typeAnnotation: SyntaxFactory.makeTypeAnnotation(
+                colon: Tokens.colon,
+                type: typeIdentifier
+            ),
+            initializer: nil,
+            accessor: nil,
+            trailingComma: nil
+        )
 
         return SyntaxFactory.makeVariableDecl(
             attributes: nil,
             modifiers: nil,
             letOrVarKeyword: mutabilityKeyword,
-            bindings: SyntaxFactory.makePatternBindingList([
-                SyntaxFactory.makePatternBinding(
-                    pattern: SyntaxFactory.makeIdentifierPattern(identifier: nameIdentifier),
-                    typeAnnotation: SyntaxFactory.makeTypeAnnotation(colon: colon, type: typeIdentifier),
-                    initializer: nil,
-                    accessor: nil,
-                    trailingComma: nil
-                )
-            ])
+            bindings: SyntaxFactory.makePatternBindingList([binding])
         )
     }
 }

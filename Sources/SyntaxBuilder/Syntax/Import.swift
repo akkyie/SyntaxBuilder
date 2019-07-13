@@ -8,18 +8,13 @@ public struct Import: SyntaxBuildable {
     }
 
     public func buildSyntax(format: Format, leadingTrivia: Trivia?) -> Syntax {
-        let importToken = SyntaxFactory.makeImportKeyword(
-            leadingTrivia: leadingTrivia ?? .zero,
-            trailingTrivia: .spaces(1)
-        )
-
         let moduleToken = SyntaxFactory
             .makeIdentifier(module)
 
         return SyntaxFactory.makeImportDecl(
             attributes: nil,
             modifiers: nil,
-            importTok: importToken,
+            importTok: Tokens.import.with(leading: leadingTrivia),
             importKind: nil,
             path: SyntaxFactory.makeAccessPath([
                 SyntaxFactory.makeAccessPathComponent(name: moduleToken, trailingDot: nil),

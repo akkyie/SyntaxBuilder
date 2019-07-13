@@ -19,43 +19,44 @@ extension Format {
         return copy
     }
 
-    func makeNewline() -> Trivia {
-        appendNewline(to: .zero)
+    func makeNewline(count: Int = 1) -> Trivia {
+        Trivia.newlines(count).appending(.spaces(indents * indentWidth))
     }
 
-    func appendNewline(to trivia: Trivia, count: Int = 1) -> Trivia {
-        trivia
-            .appending(.newlines(count))
-            .appending(.spaces(indents * indentWidth))
-    }
-
-    func appendComment(to trivia: Trivia, _ content: String, _ type: CommentType) -> Trivia {
-        let makeLines = { (content: String) in content.split(separator: "\n", omittingEmptySubsequences: false) }
-        var trivia = trivia
-        switch type {
-        case .raw:
-            trivia = trivia.appending(.garbageText(content))
-        case .line:
-            trivia = makeLines(content).reduce(trivia) { trivia, line in
-                appendNewline(to: trivia.appending(.lineComment("// " + line)))
-            }
-        case .docLine:
-            trivia = makeLines(content).reduce(trivia) { trivia, line in
-                appendNewline(to: trivia.appending(.lineComment("/// " + line)))
-            }
-        case .block:
-            trivia = appendNewline(to: trivia.appending(.docBlockComment("/*")))
-            trivia = makeLines(content).reduce(trivia) { trivia, line in
-                appendNewline(to: trivia.appending(.lineComment(String(line))))
-            }
-            trivia = appendNewline(to: trivia.appending(.docBlockComment(" */")))
-        case .docBlock:
-            trivia = appendNewline(to: trivia.appending(.docBlockComment("/**")))
-            trivia = makeLines(content).reduce(trivia) { trivia, line in
-                appendNewline(to: trivia.appending(.lineComment(String(line))))
-            }
-            trivia = appendNewline(to: trivia.appending(.docBlockComment(" */")))
+    func makeComment(_ content: String, _ type: CommentType) -> Trivia {
+        let makeLines = { (content: String) in
+            content.split(separator: "\n", omittingEmptySubsequences: false)
         }
-        return trivia
+
+        var trivias = [Trivia]()
+        switch type {
+        case .line:
+            trivias = makeLines(content).map { line in
+                Trivia.lineComment("// " + line)
+            }
+
+        case .docLine:
+            trivias = makeLines(content).map { line in
+                Trivia.lineComment("/// " + line)
+            }
+
+        case .block:
+            trivias += [Trivia.docBlockComment("/*")]
+            trivias += makeLines(content).map { line in
+                Trivia.lineComment(String(line)).appending(makeNewline())
+            }
+            trivias += [Trivia.docBlockComment(" */")]
+
+        case .docBlock:
+            trivias += [Trivia.docBlockComment("/**")]
+            trivias += makeLines(content).map { line in
+                Trivia.lineComment(String(line)).appending(makeNewline())
+            }
+            trivias += [Trivia.docBlockComment(" */")]
+        }
+
+        return trivias.reduce(Trivia.zero) { trivia, next in
+            trivia.appending(next).appending(makeNewline())
+        }
     }
 }

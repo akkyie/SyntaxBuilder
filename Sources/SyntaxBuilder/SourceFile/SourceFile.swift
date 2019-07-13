@@ -28,11 +28,10 @@ private struct SourceFileBuilder: SyntaxBuildable {
         }
 
         let codeBlockItemList = SyntaxFactory.makeCodeBlockItemList(itemList)
-        let eofToken = SyntaxFactory.makeToken(.eof, presence: .present)
 
         return SyntaxFactory.makeSourceFile(
             statements: codeBlockItemList,
-            eofToken: eofToken
+            eofToken: Tokens.eof
         )
     }
 }

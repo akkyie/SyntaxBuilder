@@ -15,22 +15,17 @@ public struct Typealias: DeclBuildable {
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
-        let keyword = SyntaxFactory.makeTypealiasKeyword(
-            leadingTrivia: leadingTrivia ?? .zero,
-            trailingTrivia: .spaces(1)
-        )
-
         let identifier = SyntaxFactory.makeIdentifier(name)
 
         let initializer = SyntaxFactory.makeTypeInitializerClause(
-            equal: SyntaxFactory.makeEqualToken(leadingTrivia: .spaces(1), trailingTrivia: .spaces(1)),
+            equal: Tokens.equal,
             value: SyntaxFactory.makeTypeIdentifier(type)
         )
 
         return SyntaxFactory.makeTypealiasDecl(
             attributes: nil,
             modifiers: nil,
-            typealiasKeyword: keyword,
+            typealiasKeyword: Tokens.typealias.with(leading: leadingTrivia),
             identifier: identifier,
             genericParameterClause: nil,
             initializer: initializer,

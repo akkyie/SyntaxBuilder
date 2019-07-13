@@ -2,34 +2,31 @@ import SwiftSyntax
 
 public struct Struct: DeclBuildable {
     let name: String
-    let members: MemberDeclListBuildable
+    let memberList: MemberDeclListBuildable
 
-    public init(_ name: String, @MemberDeclListBuilder buildMembers: () -> MemberDeclListBuildable) {
+    public init(_ name: String, @MemberDeclListBuilder buildMemberList: () -> MemberDeclListBuildable) {
         self.name = name
-        self.members = buildMembers()
+        self.memberList = buildMemberList()
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
-        let keyword = SyntaxFactory.makeStructKeyword(
-            leadingTrivia: leadingTrivia ?? .zero,
-            trailingTrivia: .spaces(1)
+        let members = memberList.buildMemberDeclList(
+            format: format.indented(),
+            leadingTrivia: format.indented().makeNewline()
         )
-
-        let nameToken = SyntaxFactory
-            .makeIdentifier(name)
 
         return SyntaxFactory.makeStructDecl(
             attributes: nil,
             modifiers: nil,
-            structKeyword: keyword,
-            identifier: nameToken,
+            structKeyword: Tokens.struct.with(leading: leadingTrivia),
+            identifier: SyntaxFactory.makeIdentifier(name),
             genericParameterClause: nil,
             inheritanceClause: nil,
             genericWhereClause: nil,
             members: SyntaxFactory.makeMemberDeclBlock(
-                leftBrace: SyntaxFactory.makeLeftBraceToken().withLeadingTrivia(.spaces(1)),
-                members: members.buildMemberDeclList(format: format.indented(), leadingTrivia: format.indented().makeNewline()),
-                rightBrace: SyntaxFactory.makeRightBraceToken().withLeadingTrivia(format.makeNewline())
+                leftBrace: Tokens.brace.left.with(leading: .space),
+                members: members,
+                rightBrace: Tokens.brace.right.with(leading: format.makeNewline())
             )
         )
     }

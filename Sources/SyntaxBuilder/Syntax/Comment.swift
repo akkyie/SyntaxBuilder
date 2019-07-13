@@ -1,7 +1,6 @@
 import SwiftSyntax
 
 public enum CommentType {
-    case raw
     case line
     case block
     case docLine
@@ -11,24 +10,27 @@ public enum CommentType {
 public struct Commented<T: SyntaxBuildable> {
     let builder: T
     let type: CommentType
-    let content: String
+    let content: String?
     let newlineCount: Int
 
     private func makeTrivia(format: Format, leadingTrivia: Trivia?) -> Trivia {
-        var trivia = leadingTrivia ?? .zero
-        trivia = format.appendNewline(to: trivia, count: newlineCount)
-        trivia = format.appendComment(to: trivia, content, type)
+        var trivia = (leadingTrivia ?? .zero).appending(format.makeNewline(count: newlineCount))
+
+        if let content = content {
+            trivia = trivia.appending(format.makeComment(content, type))
+        }
+
         return trivia
     }
 }
 
 extension SyntaxBuildable {
     public func prependingComment(_ content: String, _ type: CommentType = .line, withNewlines count: Int = 1) -> Commented<Self> {
-        return Commented(builder: self, type: type, content: content, newlineCount: count)
+        Commented(builder: self, type: type, content: content, newlineCount: count)
     }
 
-    public func prependingNewlines(count: Int) -> Commented<Self> {
-        prependingComment("", .raw, withNewlines: count)
+    public func prependingNewline(count: Int = 1) -> Commented<Self> {
+        Commented(builder: self, type: .line, content: nil, newlineCount: count)
     }
 }
 
