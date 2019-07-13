@@ -17,23 +17,18 @@ public typealias Var = Variable<VariableVarMutability>
 
 public struct Variable<Mutability: VariableMutability>: DeclBuildable {
     let name: String
-    let type: String
+    let type: Type
 
-    public init(_ name: String, of type: String) {
+    public init(_ name: String, of type: Type) {
         self.name = name
         self.type = type
-    }
-
-    public init<T>(_ name: String, of type: T.Type) {
-        self.name = name
-        self.type = String(describing: type)
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
         let mutabilityKeyword = Mutability.token.with(leading: leadingTrivia)
 
         let nameIdentifier = SyntaxFactory.makeIdentifier(name)
-        let typeIdentifier = SyntaxFactory.makeTypeIdentifier(type)
+        let typeIdentifier = type.buildType(format: format, leadingTrivia: nil)
 
         let binding = SyntaxFactory.makePatternBinding(
             pattern: SyntaxFactory.makeIdentifierPattern(identifier: nameIdentifier),

@@ -5,7 +5,7 @@ enum Tokens {
     // MARK: Punctuations and Signs
 
     /// `", "`
-    static let comma = SyntaxFactory.makeCommaToken().with(leading: .space)
+    static let comma = SyntaxFactory.makeCommaToken().with(trailing: .space)
 
     /// `": "`
     static let colon = SyntaxFactory.makeColonToken().with(trailing: .space)

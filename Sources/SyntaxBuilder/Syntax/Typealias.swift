@@ -2,16 +2,11 @@ import SwiftSyntax
 
 public struct Typealias: DeclBuildable {
     let name: String
-    let type: String
+    let type: Type
 
-    public init(_ name: String, of type: String) {
+    public init(_ name: String, of type: Type) {
         self.name = name
         self.type = type
-    }
-
-    public init<T>(_ name: String, of type: T.Type) {
-        self.name = name
-        self.type = String(describing: type)
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
@@ -19,7 +14,7 @@ public struct Typealias: DeclBuildable {
 
         let initializer = SyntaxFactory.makeTypeInitializerClause(
             equal: Tokens.equal,
-            value: SyntaxFactory.makeTypeIdentifier(type)
+            value: type.buildType(format: format, leadingTrivia: nil)
         )
 
         return SyntaxFactory.makeTypealiasDecl(

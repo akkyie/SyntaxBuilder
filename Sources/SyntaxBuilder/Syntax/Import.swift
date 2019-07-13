@@ -8,8 +8,7 @@ public struct Import: SyntaxBuildable {
     }
 
     public func buildSyntax(format: Format, leadingTrivia: Trivia?) -> Syntax {
-        let moduleToken = SyntaxFactory
-            .makeIdentifier(module)
+        let moduleToken = SyntaxFactory.makeIdentifier(module)
 
         return SyntaxFactory.makeImportDecl(
             attributes: nil,

@@ -1,7 +1,7 @@
 import SyntaxBuilder
 
 struct UserSourceFile: SourceFile {
-    let idType: String
+    let idType: Type
 
     @SyntaxListBuilder
     var body: Body {
@@ -13,11 +13,13 @@ struct UserSourceFile: SourceFile {
             Let("id", of: "ID")
                 .prependingComment("The user's ID.", .docLine)
 
-            Let("name", of: String.self)
+            Let("name", of: "String")
                 .prependingComment("The user's name.", .docLine)
 
-            Var("age", of: Int.self)
+            Var("age", of: "Int")
                 .prependingComment("The user's age.", .docLine)
+
+            Var("tuple", of: ["Int", "String"]).prependingNewline()
         }
         .prependingComment("""
             User is an user.
