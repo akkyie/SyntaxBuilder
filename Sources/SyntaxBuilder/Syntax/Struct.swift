@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct Struct: SyntaxBuildable {
+public struct Struct: DeclBuildable {
     let name: String
     let members: MemberDeclListBuildable
 
@@ -9,7 +9,7 @@ public struct Struct: SyntaxBuildable {
         self.members = buildMembers()
     }
 
-    public func buildSyntax(format: Format, leadingTrivia: Trivia?) -> Syntax {
+    public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
         let keyword = SyntaxFactory.makeStructKeyword(
             leadingTrivia: leadingTrivia ?? .zero,
             trailingTrivia: .spaces(1)
@@ -28,7 +28,7 @@ public struct Struct: SyntaxBuildable {
             genericWhereClause: nil,
             members: SyntaxFactory.makeMemberDeclBlock(
                 leftBrace: SyntaxFactory.makeLeftBraceToken().withLeadingTrivia(.spaces(1)),
-                members: members.buildMemberDeclList(format: format, leadingTrivia: format.indented().makeNewline()),
+                members: members.buildMemberDeclList(format: format.indented(), leadingTrivia: format.indented().makeNewline()),
                 rightBrace: SyntaxFactory.makeRightBraceToken().withLeadingTrivia(format.makeNewline())
             )
         )
