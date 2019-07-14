@@ -1,13 +1,13 @@
 import SwiftSyntax
 
-public struct Import: SyntaxBuildable {
+public struct Import: DeclBuildable {
     let module: String
 
     public init(_ module: String) {
         self.module = module
     }
 
-    public func buildSyntax(format: Format, leadingTrivia: Trivia?) -> Syntax {
+    public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
         let moduleToken = SyntaxFactory.makeIdentifier(module)
 
         return SyntaxFactory.makeImportDecl(
