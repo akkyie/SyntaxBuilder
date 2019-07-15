@@ -4,6 +4,8 @@ public enum Type: TypeBuildable {
     case type(String)
     case tuple([(String, String)])
 
+    public static let void = Type.type("Void")
+
     public func buildType(format: Format, leadingTrivia: Trivia?) -> TypeSyntax {
         switch self {
         case let .type(name):
@@ -46,7 +48,7 @@ extension Type: ExpressibleByStringLiteral {
 extension Type: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: String...) {
         switch elements.count {
-        case 0: self = .type("Void")
+        case 0: self = .void
         case 1: self = .type(elements[0])
         default: self = .tuple(elements.map { ("", $0) })
         }

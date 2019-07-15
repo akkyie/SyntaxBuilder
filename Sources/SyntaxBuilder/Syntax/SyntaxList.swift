@@ -1,6 +1,8 @@
 import SwiftSyntax
 
 public struct SyntaxList: SyntaxListBuildable {
+    public static let empty = SyntaxList(builders: [])
+
     let builders: [SyntaxListBuildable]
 
     public func buildSyntaxList(format: Format, leadingTrivia: Trivia?) -> [Syntax] {

@@ -21,7 +21,7 @@ enum Tokens {
 
     /// `"{"`, `"}"`
     static let brace = (
-        left: SyntaxFactory.makeLeftBraceToken(),
+        left: SyntaxFactory.makeLeftBraceToken().with(leading: .space),
         right: SyntaxFactory.makeRightBraceToken()
     )
 

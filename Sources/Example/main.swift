@@ -28,6 +28,8 @@ struct UserSourceFile: SourceFile {
             User is an user.
             <https://github.com/akkyie/SyntaxBuilder/>
         """, .docBlock)
+
+        Func("test", ["foo": "String"], returns: "Void")
     }
 }
 
