@@ -6,7 +6,7 @@ A *toy* Swift code generator based on SwiftSyntax, leveraging [`Function Builder
 
 Xcode 11 beta-bundled Swift 5.1
 
-## Example (or everything currently implemented)
+## Example
 
 ```swift
 import SyntaxBuilder
@@ -50,6 +50,8 @@ user.write(to: &str)
 print(str)
 
 ```
+
+### Output
 
 ```swift
 import Foundation
