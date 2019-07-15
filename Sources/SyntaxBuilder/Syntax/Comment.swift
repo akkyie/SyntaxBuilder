@@ -41,10 +41,10 @@ extension Commented: SyntaxBuildable where T: SyntaxBuildable {
     }
 }
 
-extension Commented: MemberDeclListBuildable where T: MemberDeclListBuildable {
-    public func buildMemberDeclList(format: Format, leadingTrivia: Trivia?) -> MemberDeclListSyntax {
+extension Commented: DeclListBuildable where T: DeclListBuildable {
+    public func buildDeclList(format: Format, leadingTrivia: Trivia?) -> [DeclSyntax] {
         let leadingTrivia = makeTrivia(format: format, leadingTrivia: leadingTrivia)
-        return builder.buildMemberDeclList(format: format, leadingTrivia: leadingTrivia)
+        return builder.buildDeclList(format: format, leadingTrivia: leadingTrivia)
     }
 }
 

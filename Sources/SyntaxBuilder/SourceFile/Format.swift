@@ -43,14 +43,14 @@ extension Format {
         case .block:
             trivias += [Trivia.docBlockComment("/*")]
             trivias += makeLines(content).map { line in
-                Trivia.lineComment(String(line)).appending(makeNewline())
+                Trivia.lineComment(String(line))
             }
             trivias += [Trivia.docBlockComment(" */")]
 
         case .docBlock:
             trivias += [Trivia.docBlockComment("/**")]
             trivias += makeLines(content).map { line in
-                Trivia.lineComment(String(line)).appending(makeNewline())
+                Trivia.lineComment(String(line))
             }
             trivias += [Trivia.docBlockComment(" */")]
         }

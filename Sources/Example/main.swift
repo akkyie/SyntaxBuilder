@@ -19,7 +19,10 @@ struct UserSourceFile: SourceFile {
             Var("age", of: "Int")
                 .prependingComment("The user's age.", .docLine)
 
-            Var("tuple", of: ["Int", "String"]).prependingNewline()
+            ForEach(0 ..< 3) { i in
+                Let("value\(i)", of: "String")
+                    .prependingNewline()
+            }
         }
         .prependingComment("""
             User is an user.

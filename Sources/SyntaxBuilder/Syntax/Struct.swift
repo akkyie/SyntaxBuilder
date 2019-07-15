@@ -2,17 +2,23 @@ import SwiftSyntax
 
 public struct Struct: DeclBuildable {
     let name: String
-    let memberList: MemberDeclListBuildable
+    let memberList: DeclListBuildable
 
-    public init(_ name: String, @MemberDeclListBuilder buildMemberList: () -> MemberDeclListBuildable) {
+    public init(_ name: String, @DeclListBuilder buildMemberList: () -> DeclListBuildable) {
         self.name = name
         self.memberList = buildMemberList()
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
-        let members = memberList.buildMemberDeclList(
+        let declList = memberList.buildDeclList(
             format: format.indented(),
             leadingTrivia: format.indented().makeNewline()
+        )
+
+        let members = SyntaxFactory.makeMemberDeclList(
+            declList.map { decl in
+                SyntaxFactory.makeMemberDeclListItem(decl: decl, semicolon: nil)
+            }
         )
 
         return SyntaxFactory.makeStructDecl(

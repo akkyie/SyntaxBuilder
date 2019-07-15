@@ -1,7 +1,7 @@
 import SwiftSyntax
 
-public struct CodeBlock: SyntaxListBuildable {
-    let builders: [SyntaxBuildable]
+public struct SyntaxList: SyntaxListBuildable {
+    let builders: [SyntaxListBuildable]
 
     public func buildSyntaxList(format: Format, leadingTrivia: Trivia?) -> [Syntax] {
         func trivia(for index: Int) -> Trivia {
@@ -12,8 +12,8 @@ public struct CodeBlock: SyntaxListBuildable {
 
         return builders
             .enumerated()
-            .map { index, builder in
-                builder.buildSyntax(format: format, leadingTrivia: trivia(for: index))
-            }
+            .flatMap { index, builder in
+                builder.buildSyntaxList(format: format, leadingTrivia: trivia(for: index))
+        }
     }
 }
