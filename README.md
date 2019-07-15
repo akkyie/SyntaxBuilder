@@ -12,7 +12,7 @@ Xcode 11 beta-bundled Swift 5.1
 import SyntaxBuilder
 
 struct UserSourceFile: SourceFile {
-    let idType: String
+    let idType: Type
 
     @SyntaxListBuilder
     var body: Body {
@@ -24,11 +24,16 @@ struct UserSourceFile: SourceFile {
             Let("id", of: "ID")
                 .prependingComment("The user's ID.", .docLine)
 
-            Let("name", of: String.self)
+            Let("name", of: "String")
                 .prependingComment("The user's name.", .docLine)
 
-            Var("age", of: Int.self)
+            Var("age", of: "Int")
                 .prependingComment("The user's age.", .docLine)
+
+            ForEach(0 ..< 3) { i in
+                Let("value\(i)", of: "String")
+                    .prependingNewline()
+            }
         }
         .prependingComment("""
             User is an user.
@@ -43,9 +48,8 @@ var str: String = ""
 user.write(to: &str)
 
 print(str)
-```
 
-results in:
+```
 
 ```swift
 import Foundation
@@ -65,5 +69,11 @@ struct User {
     
     /// The user's age.
     var age: Int
+    
+    let value0: String
+    
+    let value1: String
+    
+    let value2: String
 }
 ```
