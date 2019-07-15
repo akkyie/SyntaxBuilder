@@ -18,10 +18,12 @@ public typealias Var = Variable<VariableVarMutability>
 public struct Variable<Mutability: VariableMutability>: DeclBuildable {
     let name: String
     let type: Type
+    let initializer: ExprBuildable?
 
-    public init(_ name: String, of type: Type) {
+    public init(_ name: String, of type: Type, value: ExprBuildable? = nil) {
         self.name = name
         self.type = type
+        self.initializer = value
     }
 
     public func buildDecl(format: Format, leadingTrivia: Trivia?) -> DeclSyntax {
@@ -30,13 +32,18 @@ public struct Variable<Mutability: VariableMutability>: DeclBuildable {
         let nameIdentifier = SyntaxFactory.makeIdentifier(name)
         let typeIdentifier = type.buildType(format: format, leadingTrivia: nil)
 
+        let initClause = initializer.flatMap { builder -> InitializerClauseSyntax in
+            let expr = builder.buildExpr(format: format, leadingTrivia: leadingTrivia)
+            return SyntaxFactory.makeInitializerClause(equal: Tokens.equal, value: expr)
+        }
+
         let binding = SyntaxFactory.makePatternBinding(
             pattern: SyntaxFactory.makeIdentifierPattern(identifier: nameIdentifier),
             typeAnnotation: SyntaxFactory.makeTypeAnnotation(
                 colon: Tokens.colon,
                 type: typeIdentifier
             ),
-            initializer: nil,
+            initializer: initClause,
             accessor: nil,
             trailingComma: nil
         )

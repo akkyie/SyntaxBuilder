@@ -16,7 +16,7 @@ struct UserSourceFile: SourceFile {
             Let("name", of: "String")
                 .prependingComment("The user's name.", .docLine)
 
-            Var("age", of: "Int")
+            Var("age", of: "Int", value: IntegerLiteral(0))
                 .prependingComment("The user's age.", .docLine)
 
             ForEach(0 ..< 3) { i in
