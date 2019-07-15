@@ -4,7 +4,10 @@ public struct Struct: DeclBuildable {
     let name: String
     let memberList: DeclListBuildable
 
-    public init(_ name: String, @DeclListBuilder buildMemberList: () -> DeclListBuildable) {
+    public init(
+        _ name: String,
+        @DeclListBuilder buildMemberList: () -> DeclListBuildable = { DeclList.empty }
+    ) {
         self.name = name
         self.memberList = buildMemberList()
     }

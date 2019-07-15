@@ -11,3 +11,9 @@ public struct DeclList: DeclListBuildable {
         buildDeclList(format: format, leadingTrivia: leadingTrivia)
     }
 }
+
+extension DeclList {
+    public static var empty: DeclList {
+        DeclList(builders: [])
+    }
+}
