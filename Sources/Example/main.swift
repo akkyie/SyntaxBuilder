@@ -18,18 +18,17 @@ struct UserSourceFile: SourceFile {
 
             Var("age", of: "Int", value: IntegerLiteral(0))
                 .prependingComment("The user's age.", .docLine)
-
-            ForEach(0 ..< 3) { i in
-                Let("value\(i)", of: "String")
-                    .prependingNewline()
-            }
         }
         .prependingComment("""
             User is an user.
             <https://github.com/akkyie/SyntaxBuilder/>
         """, .docBlock)
 
-        Func("test", ["foo": "String"], returns: "Void")
+        Func("test", ["foo": "String"], returns: "Void") {
+            ForEach(0 ..< 5) { i in
+                Let("value\(i)", of: "String", value: StringLiteral("Value \(i)"))
+            }   
+        }.prependingNewline()
     }
 }
 
